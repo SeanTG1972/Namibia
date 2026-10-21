@@ -148,7 +148,7 @@
     .third { grid-column: span 1; }
     .adults { grid-column: 1 / -1; }
     .half { grid-column: 1 / -1; }
-    th, td { padding: 9px 8px; font-size: 0.9rem; }
+    th, td { padding: 9px 6px; font-size: 0.85rem; }
     .opt { display: none; }
   }
 </style>
@@ -271,7 +271,7 @@
     if (q.highNights) cols.push(["High season " + cur + "/night", true]);
     if (q.lowNights) cols.push(["Low season " + cur + "/night", true]);
     cols.push(["Nights", true]);
-    if (discounted) cols.push(["Subtotal " + cur, true], ["Discount " + cur, true]);
+    if (discounted) cols.push(["Subtotal " + cur, true], ["Discount " + cur]);
     cols.push(["Total " + cur], ["Per night " + cur]);
 
     var table = el("table"), thead = el("thead"), tbody = el("tbody"), tfoot = el("tfoot");
@@ -287,7 +287,7 @@
       tr.appendChild(el("td", String(q.nights), "opt"));
       if (discounted) {
         tr.appendChild(el("td", num(l.subtotal), "opt"));
-        tr.appendChild(el("td", l.discount ? "−" + num(l.discount) : num(0), "opt"));
+        tr.appendChild(el("td", l.discount ? "−" + num(l.discount) : num(0)));
       }
       tr.appendChild(el("td", num(l.total)));
       tr.appendChild(el("td", num(l.perNight)));
@@ -299,7 +299,7 @@
     for (var i = 1; i < cols.length - (discounted ? 4 : 2); i++) fr.appendChild(el("td", "", "opt"));
     if (discounted) {
       fr.appendChild(el("td", num(q.subtotal), "opt"));
-      fr.appendChild(el("td", "−" + num(q.discount), "opt"));
+      fr.appendChild(el("td", "−" + num(q.discount)));
     }
     fr.appendChild(el("td", num(q.total)));
     fr.appendChild(el("td", num(q.total / q.nights)));
