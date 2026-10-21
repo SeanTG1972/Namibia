@@ -41,6 +41,10 @@ class GuestLine:
     discount: float
     total: float
 
+    def per_night(self, nights):
+        """What this guest pays per night, after discounts."""
+        return round(self.total / nights, 2)
+
 
 @dataclass
 class Quote:
@@ -156,7 +160,7 @@ def format_table(q):
     head = f"{'Guest':<10} {'Sheet position':>14} {'Nightly rate':>22} {'Nights':>7}"
     if discounted:
         head += f" {'Subtotal':>12} {'Discount':>12}"
-    head += f" {'Total ' + cur:>14}"
+    head += f" {'Total ' + cur:>14} {'Per night':>12}"
     rows = [head, "-" * len(head)]
     for line in q.lines:
         position = "free" if line.position is None else f"{line.position}"
@@ -167,12 +171,13 @@ def format_table(q):
         row = f"{line.label:<10} {position:>14} {rate:>22} {q.nights:>7}"
         if discounted:
             row += f" {line.subtotal:>12,.2f} {0 - line.discount:>12,.2f}"
-        rows.append(row + f" {line.total:>14,.2f}")
+        rows.append(row + f" {line.total:>14,.2f} {line.per_night(q.nights):>12,.2f}")
     rows.append("-" * len(head))
-    total = f"{'GRAND TOTAL':<{len(head) - 15}} {q.total:>14,.2f}"
+    party_per_night = round(q.total / q.nights, 2)
+    total = f"{'GRAND TOTAL':<{len(head) - 28}} {q.total:>14,.2f} {party_per_night:>12,.2f}"
     if discounted:
-        total = (f"{'GRAND TOTAL':<{len(head) - 41}} {q.subtotal:>12,.2f} "
-                 f"{0 - q.discount:>12,.2f} {q.total:>14,.2f}")
+        total = (f"{'GRAND TOTAL':<{len(head) - 54}} {q.subtotal:>12,.2f} "
+                 f"{0 - q.discount:>12,.2f} {q.total:>14,.2f} {party_per_night:>12,.2f}")
     rows.append(total)
     return "\n".join(rows)
 
