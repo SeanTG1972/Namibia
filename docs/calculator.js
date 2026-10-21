@@ -79,7 +79,10 @@
     return {
       currency: card.currency, nights: nights.length, highNights: highNights, lowNights: lowNights,
       discountRate: discount.rate, discountReasons: discount.reasons, lines: lines,
-      subtotal: sum("subtotal"), discount: sum("discount"), total: sum("total"), warnings: warnings,
+      subtotal: sum("subtotal"), discount: sum("discount"), total: sum("total"),
+      // Grand total per paying guest (adults + children) per night.
+      avgPerPersonNight: round2(sum("total") / ((adults + children) * nights.length)),
+      warnings: warnings,
     };
   }
 
