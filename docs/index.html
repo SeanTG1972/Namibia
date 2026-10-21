@@ -1,0 +1,312 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sandfontein Rate Calculator</title>
+<meta name="description" content="Quote a stay at Sandfontein Lodge & Nature Reserve, guest by guest.">
+<style>
+  :root {
+    --bg: #faf7f2;
+    --surface: #ffffff;
+    --text: #2b2520;
+    --muted: #6f655b;
+    --line: #e4dcd1;
+    --accent: #a4532b;
+    --accent-text: #ffffff;
+    --good-bg: #edf5ec;
+    --good-text: #2f6b33;
+    --warn-bg: #fbf1df;
+    --warn-text: #7a5413;
+    --bad-bg: #fbe9e6;
+    --bad-text: #9b2c1f;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #1b1815;
+      --surface: #25211d;
+      --text: #f0e9e0;
+      --muted: #b0a597;
+      --line: #3b352f;
+      --accent: #e08a5c;
+      --accent-text: #1b1815;
+      --good-bg: #1f3220;
+      --good-text: #a9d8a6;
+      --warn-bg: #3a2e17;
+      --warn-text: #ecc77e;
+      --bad-bg: #3d1f1a;
+      --bad-text: #f0a597;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #1b1815;
+    --surface: #25211d;
+    --text: #f0e9e0;
+    --muted: #b0a597;
+    --line: #3b352f;
+    --accent: #e08a5c;
+    --accent-text: #1b1815;
+    --good-bg: #1f3220;
+    --good-text: #a9d8a6;
+    --warn-bg: #3a2e17;
+    --warn-text: #ecc77e;
+    --bad-bg: #3d1f1a;
+    --bad-text: #f0a597;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font: 16px/1.5 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  main { max-width: 860px; margin: 0 auto; padding: 32px 16px 48px; }
+  h1 {
+    font-family: Georgia, "Times New Roman", serif;
+    font-weight: normal;
+    font-size: clamp(1.8rem, 5vw, 2.4rem);
+    margin: 0 0 6px;
+  }
+  .intro { color: var(--muted); margin: 0 0 24px; }
+  form {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 20px;
+    display: grid;
+    gap: 16px;
+    grid-template-columns: repeat(6, 1fr);
+  }
+  .field { display: flex; flex-direction: column; gap: 6px; }
+  .third { grid-column: span 2; }
+  .half { grid-column: span 3; }
+  .full { grid-column: 1 / -1; }
+  label { font-size: 0.9rem; font-weight: 600; }
+  label small { font-weight: normal; color: var(--muted); }
+  input[type=number], input[type=date], select {
+    font: inherit;
+    color: var(--text);
+    background: var(--bg);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 9px 10px;
+    width: 100%;
+    min-width: 0;
+  }
+  input:focus, select:focus { outline: 2px solid var(--accent); outline-offset: 1px; }
+  .check { flex-direction: row; align-items: center; gap: 10px; }
+  .check input { width: 18px; height: 18px; accent-color: var(--accent); margin: 0; }
+  .check label { font-weight: normal; }
+  #result { margin-top: 28px; }
+  .summary { font-size: 1.15rem; margin: 0 0 12px; }
+  .note { border-radius: 8px; padding: 10px 14px; margin: 0 0 12px; }
+  .note.good { background: var(--good-bg); color: var(--good-text); }
+  .note.warn { background: var(--warn-bg); color: var(--warn-text); }
+  .note.bad { background: var(--bad-bg); color: var(--bad-text); }
+  .table-wrap {
+    overflow-x: auto;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+  }
+  table { border-collapse: collapse; width: 100%; font-variant-numeric: tabular-nums; }
+  th, td { padding: 10px 12px; text-align: right; white-space: nowrap; border-bottom: 1px solid var(--line); }
+  thead th { white-space: normal; vertical-align: bottom; }
+  th:first-child, td:first-child { text-align: left; }
+  thead th { font-size: 0.85rem; color: var(--muted); font-weight: 600; }
+  tfoot td { font-weight: 700; border-bottom: none; border-top: 2px solid var(--text); }
+  td.free { color: var(--muted); }
+  .grand {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 12px;
+    margin-top: 16px;
+    padding: 16px 20px;
+    background: var(--accent);
+    color: var(--accent-text);
+    border-radius: 12px;
+  }
+  .grand span { font-size: 1rem; }
+  .grand strong { font-size: clamp(1.4rem, 5vw, 1.9rem); font-weight: 600; }
+  .small { color: var(--muted); font-size: 0.85rem; margin-top: 20px; }
+  @media (max-width: 600px) {
+    form { grid-template-columns: repeat(2, 1fr); padding: 16px; }
+    .third { grid-column: span 1; }
+    .third:first-child { grid-column: 1 / -1; }
+    .half { grid-column: 1 / -1; }
+    th, td { padding: 9px 8px; font-size: 0.9rem; }
+    .opt { display: none; }
+  }
+</style>
+</head>
+<body>
+<main>
+  <h1>Sandfontein rate calculator</h1>
+  <p class="intro" id="intro"></p>
+
+  <form id="form" novalidate>
+    <div class="field third">
+      <label for="adults">Adults</label>
+      <input id="adults" type="number" min="1" max="18" step="1" value="2" inputmode="numeric">
+    </div>
+    <div class="field third">
+      <label for="children">Children <small>6–15, 50% off</small></label>
+      <input id="children" type="number" min="0" max="18" step="1" value="0" inputmode="numeric">
+    </div>
+    <div class="field third">
+      <label for="babies">Babies <small>0–5, free</small></label>
+      <input id="babies" type="number" min="0" max="18" step="1" value="0" inputmode="numeric">
+    </div>
+    <div class="field half">
+      <label for="checkIn">Check-in</label>
+      <input id="checkIn" type="date">
+    </div>
+    <div class="field half">
+      <label for="checkOut">Check-out</label>
+      <input id="checkOut" type="date">
+    </div>
+    <div class="field check full">
+      <input id="repeat" type="checkbox">
+      <label for="repeat">Repeat guests <small>10% off</small></label>
+    </div>
+    <div class="field full">
+      <label for="rateCard">Currency</label>
+      <select id="rateCard"></select>
+    </div>
+  </form>
+
+  <section id="result" aria-live="polite"></section>
+
+  <p class="small">Fully inclusive of reserve activities, meals, drinks, laundry, VAT and levies.
+    Excludes transport to and from Sandfontein, off-reserve activities, insurance and gratuities.</p>
+</main>
+
+<script src="rates.js"></script>
+<script src="calculator.js"></script>
+<script>
+(function () {
+  "use strict";
+  var rates = window.SANDFONTEIN_RATES;
+  var $ = function (id) { return document.getElementById(id); };
+  var params = new URLSearchParams(location.search);
+
+  $("intro").textContent = rates.year + " exclusive-use rates. High season April to October, low season " +
+    "November to March. Stays of " + rates.long_stay_nights + "+ nights get " +
+    Math.round(rates.long_stay_discount * 100) + "% off and repeat guests " +
+    Math.round(rates.repeat_guest_discount * 100) + "% off.";
+
+  // Currency list (direct rates only); ?card=DirectRates%20(EUR) preselects one.
+  Object.keys(rates.rate_cards).forEach(function (name) {
+    var o = document.createElement("option");
+    o.value = name;
+    o.textContent = rates.rate_cards[name].currency;
+    $("rateCard").appendChild(o);
+  });
+  $("rateCard").value = params.get("card") && rates.rate_cards[params.get("card")]
+    ? params.get("card") : "DirectRates (USD)";
+
+  function iso(d) { return d.toISOString().slice(0, 10); }
+  var today = new Date();
+  var start = new Date(Date.UTC(Math.max(today.getUTCFullYear(), rates.year),
+    today.getUTCFullYear() >= rates.year ? today.getUTCMonth() : 0,
+    today.getUTCFullYear() >= rates.year ? today.getUTCDate() : 1));
+  $("checkIn").value = iso(start);
+  $("checkOut").value = iso(new Date(start.getTime() + 3 * 864e5));
+
+  function money(x, cur) {
+    return cur + " " + x.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  }
+  function num(x) {
+    return x.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  }
+  function el(tag, text, cls) {
+    var e = document.createElement(tag);
+    if (text !== undefined) e.textContent = text;
+    if (cls) e.className = cls;
+    return e;
+  }
+  function int(id) {
+    var v = $(id).value.trim();
+    return v === "" ? 0 : Number(v);
+  }
+
+  function render() {
+    var out = $("result");
+    out.innerHTML = "";
+    var q;
+    try {
+      q = SandfonteinCalculator.quote({
+        adults: int("adults"), children: int("children"), babies: int("babies"),
+        checkIn: $("checkIn").value, checkOut: $("checkOut").value,
+        repeatGuest: $("repeat").checked, rateCard: $("rateCard").value,
+      }, rates);
+    } catch (e) {
+      out.appendChild(el("p", e.message, "note bad"));
+      return;
+    }
+    var cur = q.currency, discounted = q.discountRate > 0;
+
+    out.appendChild(el("p", q.nights + " night" + (q.nights === 1 ? "" : "s") + ": " +
+      q.highNights + " high season, " + q.lowNights + " low season", "summary"));
+    if (discounted)
+      out.appendChild(el("p", Math.round(q.discountRate * 100) + "% discount applied: " +
+        q.discountReasons.join(" + "), "note good"));
+
+    // [heading, optional]: optional columns are hidden on narrow screens.
+    var cols = [["Guest"]];
+    if (q.highNights) cols.push(["High season " + cur + "/night", true]);
+    if (q.lowNights) cols.push(["Low season " + cur + "/night", true]);
+    cols.push(["Nights", true]);
+    if (discounted) cols.push(["Subtotal " + cur], ["Discount " + cur]);
+    cols.push(["Total " + cur]);
+
+    var table = el("table"), thead = el("thead"), tbody = el("tbody"), tfoot = el("tfoot");
+    var hr = el("tr");
+    cols.forEach(function (c) { var th = el("th", c[0], c[1] ? "opt" : ""); th.scope = "col"; hr.appendChild(th); });
+    thead.appendChild(hr);
+
+    q.lines.forEach(function (l) {
+      var tr = el("tr"), free = l.type === "Baby";
+      tr.appendChild(el("td", l.label));
+      if (q.highNights) tr.appendChild(el("td", free ? "Free" : num(l.highRate), free ? "opt free" : "opt"));
+      if (q.lowNights) tr.appendChild(el("td", free ? "Free" : num(l.lowRate), free ? "opt free" : "opt"));
+      tr.appendChild(el("td", String(q.nights), "opt"));
+      if (discounted) {
+        tr.appendChild(el("td", num(l.subtotal)));
+        tr.appendChild(el("td", l.discount ? "−" + num(l.discount) : num(0)));
+      }
+      tr.appendChild(el("td", num(l.total)));
+      tbody.appendChild(tr);
+    });
+
+    var fr = el("tr");
+    fr.appendChild(el("td", "Grand total"));
+    for (var i = 1; i < cols.length - (discounted ? 3 : 1); i++) fr.appendChild(el("td", "", "opt"));
+    if (discounted) {
+      fr.appendChild(el("td", num(q.subtotal)));
+      fr.appendChild(el("td", "−" + num(q.discount)));
+    }
+    fr.appendChild(el("td", num(q.total)));
+    tfoot.appendChild(fr);
+
+    table.append(thead, tbody, tfoot);
+    var wrap = el("div", undefined, "table-wrap");
+    wrap.appendChild(table);
+    out.appendChild(wrap);
+
+    var grand = el("div", undefined, "grand");
+    grand.append(el("span", "Grand total"), el("strong", money(q.total, cur)));
+    out.appendChild(grand);
+
+    q.warnings.forEach(function (w) { out.appendChild(el("p", w, "note warn")); });
+  }
+
+  $("form").addEventListener("input", render);
+  $("form").addEventListener("change", render);
+  $("form").addEventListener("submit", function (e) { e.preventDefault(); });
+  render();
+})();
+</script>
+</body>
+</html>
