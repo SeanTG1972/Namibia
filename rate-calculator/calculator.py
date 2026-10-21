@@ -57,6 +57,7 @@ class Quote:
     subtotal: float
     discount: float
     total: float
+    avg_pppn: float  # grand total per guest (adults, children and babies) per night
     warnings: list[str] = field(default_factory=list)
 
 
@@ -144,6 +145,7 @@ def quote(adults, children, babies, check_in, check_out, rate_card=DEFAULT_CARD,
         subtotal=round(sum(line.subtotal for line in lines), 2),
         discount=round(sum(line.discount for line in lines), 2),
         total=round(sum(line.total for line in lines), 2),
+        avg_pppn=round(sum(line.total for line in lines) / ((adults + children + babies) * len(nights)), 2),
         warnings=warnings,
     )
 
@@ -197,6 +199,8 @@ def main():
         print(f"Discount: {q.discount_rate:.0%} ({' + '.join(q.discount_reasons)})")
     print()
     print(format_table(q))
+    print(f"\nAverage per person per night: {q.currency} {q.avg_pppn:,.2f} "
+          f"(includes children and babies)")
     for w in q.warnings:
         print(f"\nNote: {w}")
 

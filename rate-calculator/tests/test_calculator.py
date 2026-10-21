@@ -79,3 +79,9 @@ def test_repeat_guest_long_stay_gets_30_percent():
     child = next(line for line in q.lines if line.guest_type == "Child")
     assert child.total == pytest.approx(1280 * 0.5 * 7 * 0.7)
     assert q.total == pytest.approx((1600 + 640) * 7 * 0.7)
+
+
+def test_average_per_person_per_night_includes_children_and_babies():
+    q = quote(2, 1, 1, date(2027, 6, 1), date(2027, 6, 3), rates=RATES)
+    assert q.total == (1600 + 1280 + 515) * 2
+    assert q.avg_pppn == round(q.total / 4 / 2, 2)

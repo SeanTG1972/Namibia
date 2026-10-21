@@ -129,6 +129,19 @@
   }
   .grand span { font-size: 1rem; }
   .grand strong { font-size: clamp(1.4rem, 5vw, 1.9rem); font-weight: 600; }
+  .average {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 12px;
+    margin-top: 8px;
+    padding: 12px 20px;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+  }
+  .average strong { font-size: 1.2rem; font-weight: 600; white-space: nowrap; }
+  .average small { display: block; color: var(--muted); font-size: 0.8rem; }
   .small { color: var(--muted); font-size: 0.85rem; margin-top: 20px; }
   @media (max-width: 600px) {
     form { grid-template-columns: repeat(2, 1fr); padding: 16px; }
@@ -298,6 +311,11 @@
     var grand = el("div", undefined, "grand");
     grand.append(el("span", "Grand total"), el("strong", money(q.total, cur)));
     out.appendChild(grand);
+
+    var avg = el("div", undefined, "average"), label = el("span", "Average per person per night");
+    label.appendChild(el("small", "Includes children and babies."));
+    avg.append(label, el("strong", money(q.avgPerPersonNight, cur)));
+    out.appendChild(avg);
 
     q.warnings.forEach(function (w) { out.appendChild(el("p", w, "note warn")); });
   }
