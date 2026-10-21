@@ -79,7 +79,7 @@ body = "\n".join("| " + " | ".join(r.values()) + " |" for r in rows)
 st.markdown(f"{header}\n{align}\n{body}")
 st.metric("Grand total", f"{cur} {q.total:,.2f}")
 st.metric("Average per person per night", f"{cur} {q.avg_pppn:,.2f}")
-st.caption("Grand total divided by paying guests (adults and children) and nights. Babies are not counted.")
+st.caption("Grand total divided by all guests and nights. Includes children and babies.")
 
 for w in q.warnings:
     st.warning(w)

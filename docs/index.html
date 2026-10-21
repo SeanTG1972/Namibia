@@ -313,7 +313,7 @@
     out.appendChild(grand);
 
     var avg = el("div", undefined, "average"), label = el("span", "Average per person per night");
-    label.appendChild(el("small", "Grand total ÷ paying guests (adults and children) ÷ nights. Babies are not counted."));
+    label.appendChild(el("small", "Includes children and babies."));
     avg.append(label, el("strong", money(q.avgPerPersonNight, cur)));
     out.appendChild(avg);
 
