@@ -19,6 +19,9 @@ st.caption(
     "Stays of 5+ nights get 20% off, repeat guests 10% off (30% for both)."
 )
 
+rate_card = st.selectbox("Currency", cards, index=cards.index(DEFAULT_CARD),
+                         format_func=lambda name: rates["rate_cards"][name]["currency"])
+
 col1, col2, col3 = st.columns(3)
 adults = col1.number_input("Adults", min_value=1, max_value=rates["max_guests"], value=2)
 children = col2.number_input("Children (6–15)", min_value=0, max_value=rates["max_guests"], value=0)
@@ -30,8 +33,6 @@ check_in = col4.date_input("Check-in", value=default_in, format="YYYY-MM-DD")
 check_out = col5.date_input("Check-out", value=check_in + timedelta(days=3), format="YYYY-MM-DD")
 
 repeat_guest = st.checkbox("Repeat guests (10% off)")
-rate_card = st.selectbox("Currency", cards, index=cards.index(DEFAULT_CARD),
-                         format_func=lambda name: rates["rate_cards"][name]["currency"])
 
 try:
     q = quote(int(adults), int(children), int(babies), check_in, check_out, rate_card, rates,
