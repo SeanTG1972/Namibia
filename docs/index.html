@@ -133,7 +133,7 @@
   @media (max-width: 600px) {
     form { grid-template-columns: repeat(2, 1fr); padding: 16px; }
     .third { grid-column: span 1; }
-    .third:first-child { grid-column: 1 / -1; }
+    .adults { grid-column: 1 / -1; }
     .half { grid-column: 1 / -1; }
     th, td { padding: 9px 8px; font-size: 0.9rem; }
     .opt { display: none; }
@@ -146,7 +146,11 @@
   <p class="intro" id="intro"></p>
 
   <form id="form" novalidate>
-    <div class="field third">
+    <div class="field full">
+      <label for="rateCard">Currency</label>
+      <select id="rateCard"></select>
+    </div>
+    <div class="field third adults">
       <label for="adults">Adults</label>
       <input id="adults" type="number" min="1" max="18" step="1" value="2" inputmode="numeric">
     </div>
@@ -169,10 +173,6 @@
     <div class="field check full">
       <input id="repeat" type="checkbox">
       <label for="repeat">Repeat guests <small>10% off</small></label>
-    </div>
-    <div class="field full">
-      <label for="rateCard">Currency</label>
-      <select id="rateCard"></select>
     </div>
   </form>
 
