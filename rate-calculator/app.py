@@ -64,9 +64,11 @@ for line in q.lines:
         row[f"Subtotal {cur}"] = money(line.subtotal)
         row[f"Discount {cur}"] = money(0 - line.discount)
     row[f"Total {cur}"] = money(line.total)
+    row[f"Per night {cur}"] = money(line.per_night(q.nights))
     rows.append(row)
 blank = {k: "" for k in rows[0]}
-total_row = {**blank, "Guest": "**Grand total**", f"Total {cur}": f"**{money(q.total)}**"}
+total_row = {**blank, "Guest": "**Grand total**", f"Total {cur}": f"**{money(q.total)}**",
+             f"Per night {cur}": f"**{money(q.total / q.nights)}**"}
 if discounted:
     total_row[f"Subtotal {cur}"] = f"**{money(q.subtotal)}**"
     total_row[f"Discount {cur}"] = f"**{money(0 - q.discount)}**"

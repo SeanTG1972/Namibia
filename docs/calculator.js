@@ -67,11 +67,11 @@
       var disc = round2(subtotal * discount.rate);
       lines.push({ label: type + " " + counts[type], type: type, position: i + 1,
                    highRate: high, lowRate: low, subtotal: subtotal, discount: disc,
-                   total: round2(subtotal - disc) });
+                   total: round2(subtotal - disc), perNight: round2((subtotal - disc) / nights.length) });
     });
     for (var b = 1; b <= babies; b++)
       lines.push({ label: "Baby " + b, type: "Baby", position: null, highRate: 0, lowRate: 0,
-                   subtotal: 0, discount: 0, total: 0 });
+                   subtotal: 0, discount: 0, total: 0, perNight: 0 });
 
     function sum(key) {
       return round2(lines.reduce(function (s, l) { return s + l[key]; }, 0));

@@ -85,3 +85,9 @@ def test_average_per_person_per_night_includes_children_and_babies():
     q = quote(2, 1, 1, date(2027, 6, 1), date(2027, 6, 3), rates=RATES)
     assert q.total == (1600 + 1280 + 515) * 2
     assert q.avg_pppn == round(q.total / 4 / 2, 2)
+
+
+def test_per_night_column():
+    q = quote(2, 1, 1, date(2027, 6, 1), date(2027, 6, 6), rates=RATES)  # 5 nights, 20% off
+    per_night = [line.per_night(q.nights) for line in q.lines]
+    assert per_night == [1600 * 0.8, 1280 * 0.8, 515 * 0.8, 0]
